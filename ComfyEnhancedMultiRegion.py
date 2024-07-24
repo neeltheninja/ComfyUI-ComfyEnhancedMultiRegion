@@ -24,8 +24,8 @@ class ComfyMultiRegion:
 
     RETURN_TYPES = (
         "MODEL",
-        "POSITIVE",
-        "NEGATIVE",
+        "CONDITIONING",
+        "CONDITIONING",
     )
 
     FUNCTION = "process"
