@@ -1,5 +1,5 @@
 # Comfy EnhancedMultiRegion
-
+![shapes](docs/images/image.png)
 ## What this node does: 
 
 This is simple custom node for [**ComfyUI**](https://github.com/comfyanonymous/ComfyUI) which helps to generate images with _regional prompting_ way easier.
