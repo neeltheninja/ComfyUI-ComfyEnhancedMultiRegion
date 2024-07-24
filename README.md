@@ -44,5 +44,3 @@ Example workflow is [here](workflows/MultiRegionalWorkflow.json).
 ## Credits
 
 - [**@laksjdjf**](https://github.com/laksjdjf) – [Attention-Couple](https://github.com/laksjdjf/attention-couple-ComfyUI) and [Comfy-Couple](https://github.com/Danand/ComfyUI-ComfyCouple).
-- [**@pythongosssss**](https://github.com/pythongosssss) – [ComfyUI-Custom-Scripts](https://github.com/pythongosssss/ComfyUI-Custom-Scripts) used for capturing SVG for `README.md`
-- [**@Meina**](https://civitai.com/user/Meina) – [MeinaMix V11](https://civitai.com/models/7240/meinamix) used in example.
