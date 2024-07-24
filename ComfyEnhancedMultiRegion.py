@@ -71,9 +71,9 @@ class ComfyMultiRegion:
         return AttentionCouple().attention_couple(model, positive_combined, negative, "Attention")
 
 NODE_CLASS_MAPPINGS = {
-    "Comfy Couple": ComfyCouple
+    "Comfy Multi-Region": ComfyMultiRegion
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "Comfy Couple": "Comfy Couple",
+    "Comfy Multi-Region": "Comfy Multi-Region",
 }
