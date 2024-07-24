@@ -35,10 +35,10 @@ This is a fork of [**Danand/ComfyUI-ComfyCouple**](https://github.com/Danand/Com
 
 1. Right click in workflow.
 2. Choose node: **loaders → ComfyEnhancedMultiRegion**
-3. Connect inputs (as many positive conditionings as you need), leave the rest unconnected
-Connect outputs
+3. Connect inputs (as many positive conditionings as you need), a single negative conditioning, and the clips. Convert the width and height Widgets to Inputs and feed the image latent size to the node. (Refer to my workflow).
+4. Connect outputs
 
-Example workflow is [here](workflows/workflow-comfy-couple.json).
+Example workflow is [here](workflows/MultiRegionalWorkflow.json).
 
 
 ## Credits
