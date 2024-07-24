@@ -1,13 +1,13 @@
 [project]
-name = "comfyui-comfycouple"
-description = "If you want to draw two different characters together without blending their features, so you could try to check out this custom node."
+name = "ComfyUI-ComfyEnhancedMultiRegion"
+description = "If you want to draw multiple regions together without blending their features, so you could try to check out this custom node."
 version = "0.1.3"
 license = "GPL-3.0"
 
 [project.urls]
-Repository = "https://github.com/Danand/ComfyUI-ComfyCouple"
+Repository = "https://github.com/neeltheninja/ComfyUI-ComfyEnhancedMultiRegion"
 
 [tool.comfy]
-PublisherId = "rei---"
-DisplayName = "ComfyUI-ComfyCouple"
+PublisherId = "neeltheninja"
+DisplayName = "ComfyUI-ComfyEnhancedMultiRegion"
 Icon = ""
