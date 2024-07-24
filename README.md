@@ -6,7 +6,7 @@ This is simple custom node for [**ComfyUI**](https://github.com/comfyanonymous/C
 
 If you want to draw different regions together without blending their features, check out this custom node.
 
-| ⭕ with ComfyEnhancedMultiRegion | ❌ without ComfyEnhancedMultiRegion |
+| ⭕ with ComfyEnhancedMultiRegion (I mistakenly kept "3D rendered cone" in all of the prompts XD)| ❌ without ComfyEnhancedMultiRegion |
 | --- | --- |
 | ![shapes](docs/images/ComfyUI_postColor_00295_.png) | ![shapes](docs/images/ComfyUI_postColor_00296_.png) |
 | Prompt 1: ((blue cube)), 3D rendered cone,  white background, (far left)
