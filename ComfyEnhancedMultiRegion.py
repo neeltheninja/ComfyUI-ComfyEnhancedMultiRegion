@@ -46,41 +46,27 @@ class ComfyMultiRegion:
         masks = []
         start = 0
 
-        if orientation == "horizontal":
-            width_first = int(width * center)
+        for i, ratio in enumerate(ratios):
+            if orientation == "horizontal":
+                region_width = math.floor(width * ratio)
+                mask_rect = (start, 0, region_width, height)
+                start += region_width
+            else:  # vertical
+                region_height = math.floor(height * ratio)
+                mask_rect = (0, start, width, region_height)
+                start += region_height
 
-            mask_rect_first_x = width_first
-            mask_rect_first_y = 0
-            mask_rect_first_width = width - width_first
-            mask_rect_first_height = height
-            mask_rect_second_x = 0
-            mask_rect_second_y = 0
-            mask_rect_second_width = width_first
-            mask_rect_second_height = height
-        elif orientation == "vertical":
-            height_first = int(height * center)
+            solid_mask = SolidMask().solid(1.0, mask_rect[2], mask_rect[3])[0]
+            mask_composite = MaskComposite().combine(solid_mask_zero, solid_mask, mask_rect[0], mask_rect[1], "add")[0]
+            masks.append(mask_composite)
 
-            mask_rect_first_x = 0
-            mask_rect_first_y = height_first
-            mask_rect_first_width = width
-            mask_rect_first_height = height - height_first
-            mask_rect_second_x = 0
-            mask_rect_second_y = 0
-            mask_rect_second_width = width
-            mask_rect_second_height = height_first
+        # Apply masks to positive conditionings
+        conditioned_masks = [ConditioningSetMask().append(pos, mask, "default", 1.0)[0] for pos, mask in zip(positives, masks)]
 
-        solid_mask_zero = SolidMask().solid(0.0, width, height)[0]
-
-        solid_mask_first = SolidMask().solid(1.0, mask_rect_first_width, mask_rect_first_height)[0]
-        solid_mask_second = SolidMask().solid(1.0, mask_rect_second_width, mask_rect_second_height)[0]
-
-        mask_composite_first = MaskComposite().combine(solid_mask_zero, solid_mask_first, mask_rect_first_x, mask_rect_first_y, "add")[0]
-        mask_composite_second = MaskComposite().combine(solid_mask_zero, solid_mask_second, mask_rect_second_x, mask_rect_second_y, "add")[0]
-
-        conditioning_mask_first = ConditioningSetMask().append(positive_1, mask_composite_second, "default", 1.0)[0]
-        conditioning_mask_second = ConditioningSetMask().append(positive_2, mask_composite_first, "default", 1.0)[0]
-
-        positive_combined = ConditioningCombine().combine(conditioning_mask_first, conditioning_mask_second)[0]
+        # Combine all conditioned masks
+        positive_combined = conditioned_masks[0]
+        for mask in conditioned_masks[1:]:
+            positive_combined = ConditioningCombine().combine(positive_combined, mask)[0]
 
         return AttentionCouple().attention_couple(model, positive_combined, negative, "Attention")
 
