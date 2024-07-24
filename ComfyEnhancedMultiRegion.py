@@ -1,22 +1,24 @@
+import math
 from nodes import MAX_RESOLUTION, ConditioningCombine, ConditioningSetMask
 from comfy_extras.nodes_mask import MaskComposite, SolidMask
-
 from .attention_couple import AttentionCouple
 
-class ComfyCouple:
+class ComfyMultiRegion:
 
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "model": ("MODEL",),
-                "positive_1": ("CONDITIONING",),
-                "positive_2": ("CONDITIONING",),
                 "negative": ("CONDITIONING",),
                 "orientation": (["horizontal", "vertical"],),
-                "center": ("FLOAT", {"default": 0.5, "min": 0, "max": 1.0, "step": 0.01}),
+                "num_regions": ("INT", {"default": 2, "min": 2, "max": 10, "step": 1}),
                 "width": ("INT", {"default": 512, "min": 16, "max": MAX_RESOLUTION, "step": 8}),
                 "height": ("INT", {"default": 512, "min": 16, "max": MAX_RESOLUTION, "step": 8}),
+            },
+            "optional": {
+                **{f"positive_{i+1}": ("CONDITIONING",) for i in range(10)},  # Support up to 10 regions
+                **{f"ratio_{i+1}": ("FLOAT", {"default": 0.5, "min": 0, "max": 1.0, "step": 0.01}) for i in range(9)}  # n-1 ratios needed for n regions
             }
         }
 
