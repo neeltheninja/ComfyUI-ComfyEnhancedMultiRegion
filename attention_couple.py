@@ -42,8 +42,8 @@ class AttentionCouple:
         return {
             "required": {
                 "model": ("MODEL", ),
-                "positive": ("CONDITIONING",),
-                "negative": ("CONDITIONING",),
+                "positive": ("POSITIVE",),
+                "negative": ("NEGATIVE",),
                 "mode": (["Attention", "Latent"], ),
             }
         }
