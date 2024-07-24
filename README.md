@@ -1,17 +1,19 @@
-# Comfy Couple
+# Comfy EnhancedMultiRegion
 
-## What is
+## What this node does: 
 
-This is simple custom node for [**ComfyUI**](https://github.com/comfyanonymous/ComfyUI) which helps to generate images of actual _couples_, easier.
+This is simple custom node for [**ComfyUI**](https://github.com/comfyanonymous/ComfyUI) which helps to generate images with _regional prompting_ way easier.
 
-If you want to draw two different characters together without blending their features, so you could try to check out this custom node.
+If you want to draw different regions together without blending their features, check out this custom node.
 
-| ⭕ with Comfy Couple | ❌ without Comfy Couple  |
+| ⭕ with ComfyEnhancedMultiRegion | ❌ without ComfyEnhancedMultiRegion |
 | --- | --- |
-| ![Ayaka x Lumine](docs/images/ayalumi-comfy-couple.png) | ![Ayaka x OC](docs/images/ayalumi-plain.png) |
-| _Lumine with her own hair style_ | _Lumine with hair style of Ayaka_ |
+| ![shapes](docs/images/ComfyUI_postColor_00295_.png) | ![shapes](docs/images/ComfyUI_postColor_00296_.png) |
+| Prompt 1: ((blue cube)), 3D rendered cone,  white background, (far left)
+Prompt 2: ((yellow sphere)), 3D rendered cone,  red background 
+Prompt 3: ((purple straight cone)), 3D rendered cone, black background, (far right) | _Single Prompt_: ((blue cube)), 3D rendered cone,  white background, (far left), ((yellow sphere)), 3D rendered cone,  red background, ((purple straight cone)), 3D rendered cone, black background, (far right) |
 
-It's fork of [**laksjdjf/attention-couple-ComfyUI**](https://github.com/laksjdjf/attention-couple-ComfyUI), but implementing shortcut for the most of required nodes.
+This is a fork of [**Danand/ComfyUI-ComfyCouple**](https://github.com/Danand/ComfyUI-ComfyCouple), implementing FP16 support and upto 10 different regions in a single image.
 
 ## Installation
 
@@ -24,7 +26,7 @@ It's fork of [**laksjdjf/attention-couple-ComfyUI**](https://github.com/laksjdjf
 2. Clone this repo here:
 
    ```bash
-   git clone https://github.com/Danand/ComfyUI-ComfyCouple.git
+   git clone https://github.com/neeltheninja/ComfyUI-ComfyEnhancedMultiRegion.git
    ```
 
 3. Restart **ComfyUI**.
@@ -32,26 +34,15 @@ It's fork of [**laksjdjf/attention-couple-ComfyUI**](https://github.com/laksjdjf
 ## Usage
 
 1. Right click in workflow.
-2. Choose node: **loaders → Comfy Couple**
-3. Connect inputs, connect outputs, notice **two** positive prompts for left side and right side of image respectively.
+2. Choose node: **loaders → ComfyEnhancedMultiRegion**
+3. Connect inputs (as many positive conditionings as you need), leave the rest unconnected
+Connect outputs
 
 Example workflow is [here](workflows/workflow-comfy-couple.json).
 
-## Known issues
-
-It **is not** quite actual regional prompting.
-
-## Comparison with [**laksjdjf/attention-couple-ComfyUI**](https://github.com/laksjdjf/attention-couple-ComfyUI)
-
-Mask magic was replaced with comfy shortcut.
-
-| Comfy Couple | attention-couple-ComfyUI |
-| --- | --- |
-| ![Comfy Couple workflow](docs/images/workflow-comfy-couple.svg) | ![attention-couple-ComfyUI workflow](docs/images/workflow-attention-couple.svg) |
 
 ## Credits
 
-- [**@laksjdjf**](https://github.com/laksjdjf) – [original repo](https://github.com/laksjdjf/attention-couple-ComfyUI).
+- [**@laksjdjf**](https://github.com/laksjdjf) – [Attention-Couple](https://github.com/laksjdjf/attention-couple-ComfyUI) and [Comfy-Couple](https://github.com/Danand/ComfyUI-ComfyCouple).
 - [**@pythongosssss**](https://github.com/pythongosssss) – [ComfyUI-Custom-Scripts](https://github.com/pythongosssss/ComfyUI-Custom-Scripts) used for capturing SVG for `README.md`
 - [**@Meina**](https://civitai.com/user/Meina) – [MeinaMix V11](https://civitai.com/models/7240/meinamix) used in example.
-- [**@Numeratic**](https://civitai.com/user/Numeratic) – [Genshin Impact All In One](https://civitai.com/models/108649?modelVersionId=116970) used in example.
