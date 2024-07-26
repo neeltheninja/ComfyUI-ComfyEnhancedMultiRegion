@@ -43,4 +43,4 @@ Example workflow is [here](workflows/MultiRegionalWorkflow.json).
 
 ## Credits
 
-- [**@laksjdjf**](https://github.com/laksjdjf) – [Attention-Couple](https://github.com/laksjdjf/attention-couple-ComfyUI) and [**@Danand**](https://github.com/Danand)[Comfy-Couple](https://github.com/Danand/ComfyUI-ComfyCouple).
+- [**@laksjdjf**](https://github.com/laksjdjf) – [Attention-Couple](https://github.com/laksjdjf/attention-couple-ComfyUI) and [**@Danand**](https://github.com/Danand) – [Comfy-Couple](https://github.com/Danand/ComfyUI-ComfyCouple).
