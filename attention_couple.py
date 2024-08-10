@@ -23,7 +23,7 @@ def get_masks_from_q(masks, q, original_shape):
             ret_masks.append(mask_downsample)
         else:  # coupling処理なしの場合
             ret_masks.append(torch.ones_like(q))
-    
+
     ret_masks = torch.cat(ret_masks, dim=0)
     return ret_masks
 
@@ -45,25 +45,27 @@ class AttentionCouple:
                 "positive": ("CONDITIONING",),
                 "negative": ("CONDITIONING",),
                 "mode": (["Attention", "Latent"], ),
+                "isolation_factor": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.01}),
             }
         }
     RETURN_TYPES = ("MODEL", "CONDITIONING", "CONDITIONING")
     FUNCTION = "attention_couple"
     CATEGORY = "loaders"
 
-    def attention_couple(self, model, positive, negative, mode):
+    def attention_couple(self, model, positive, negative, mode, isolation_factor):
         if mode == "Latent":
             return (model, positive, negative)  # latent coupleの場合は何もしない
-        
+
         self.negative_positive_masks = []
         self.negative_positive_conds = []
-        
+        self.isolation_factor = isolation_factor
+
         new_positive = copy.deepcopy(positive)
         new_negative = copy.deepcopy(negative)
-        
+
         dtype = model.model.diffusion_model.dtype
         device = comfy.model_management.get_torch_device()
-        
+
         # maskとcondをリストに格納する
         for conditions in [new_negative, new_positive]:
             conditions_masks = []
@@ -101,22 +103,23 @@ class AttentionCouple:
                 block_indices = range(2) if id in [3, 4, 5] else range(10)  # transformer_depth
                 for index in block_indices:
                     set_model_patch_replace(new_model, self.make_patch(new_model.model.diffusion_model.output_blocks[id][1].transformer_blocks[index].attn2), ("output", id, index))
-        
+
         return (new_model, [new_positive[0]], [new_negative[0]])  # pool outputは・・・後回し
-    
-    def make_patch(self, module):
+
+    def make_patch(self, module):           
         def patch(q, k, v, extra_options):
-            len_neg, len_pos = self.conditioning_length  # negative, positiveの長さ
-            cond_or_uncond = extra_options["cond_or_uncond"]  # 0: cond, 1: uncond
+            len_neg, len_pos = self.conditioning_length
+            cond_or_uncond = extra_options["cond_or_uncond"]
             q_list = q.chunk(len(cond_or_uncond), dim=0)
-            b = q_list[0].shape[0]  # batch_size
-            
+            b = q_list[0].shape[0]
+
             masks_uncond = get_masks_from_q(self.negative_positive_masks[0], q_list[0], extra_options["original_shape"])
             masks_cond = get_masks_from_q(self.negative_positive_masks[1], q_list[0], extra_options["original_shape"])
 
-            context_uncond = torch.cat([cond for cond in self.negative_positive_conds[0]], dim=0)
-            context_cond = torch.cat([cond for cond in self.negative_positive_conds[1]], dim=0)
-            
+            cond_size = self.negative_positive_conds[1][0].shape[1]
+            context_uncond = torch.cat([cond[:, :cond_size] for cond in self.negative_positive_conds[0]], dim=0)
+            context_cond = torch.cat([cond[:, :cond_size] for cond in self.negative_positive_conds[1]], dim=0)
+
             k_uncond = module.to_k(context_uncond)
             k_cond = module.to_k(context_cond)
             v_uncond = module.to_v(context_uncond)
@@ -144,8 +147,11 @@ class AttentionCouple:
                 v = v.to(dtype=q_target.dtype)
                 masks = masks.to(dtype=q_target.dtype)
 
+                # Apply sharpened masks based on isolation factor
+                sharpened_masks = self.sharpen_masks(masks, self.isolation_factor)
+                
                 qkv = optimized_attention(q_target, k, v, extra_options["n_heads"])
-                qkv = qkv * masks
+                qkv = qkv * sharpened_masks
                 qkv = qkv.view(length, b, -1, module.heads * module.dim_head).sum(dim=0)
 
                 out.append(qkv)
@@ -153,7 +159,19 @@ class AttentionCouple:
             out = torch.cat(out, dim=0)
             return out
         return patch
+
+    def sharpen_masks(self, masks, isolation_factor):
+        # Convert isolation_factor to a tensor with the same device and dtype as masks
+        isolation_factor_tensor = torch.tensor(isolation_factor, device=masks.device, dtype=masks.dtype)
         
+        # Create a sharper transition based on the isolation factor
+        sharpened = torch.pow(masks, torch.exp(isolation_factor_tensor))
+        
+        # Normalize the sharpened masks
+        sharpened = sharpened / (sharpened.sum(dim=0, keepdim=True) + 1e-6)
+        
+        return sharpened
+
 NODE_CLASS_MAPPINGS = {
     "Attention couple": AttentionCouple
 }
